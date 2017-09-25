@@ -151,7 +151,11 @@ class Policy(object):
 
     def _init_session(self):
         """Launch TensorFlow session and initialize variables"""
-        self.sess = tf.Session(graph=self.g)
+        gpu_options = tf.GPUOptions(allow_growth=True)
+        self.sess = tf.Session(graph=self.g,
+                               config=tf.ConfigProto(gpu_options=gpu_options,
+                                                     log_device_placement=False)
+                               )
         self.sess.run(self.init)
 
     def sample(self, obs):
@@ -161,7 +165,7 @@ class Policy(object):
         return self.sess.run(self.sampled_act, feed_dict=feed_dict)
 
     def update(self, observes, actions, advantages, logger):
-        """ Update policy based on observations, actions and advantages
+        """ Update policy based on observations, actions and advantages 
 
         Args:
             observes: observations, shape = (N, obs_dim)

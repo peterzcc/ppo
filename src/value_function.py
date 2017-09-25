@@ -22,7 +22,11 @@ class NNValueFunction(object):
         self.epochs = 10
         self.lr = None  # learning rate set in _build_graph()
         self._build_graph()
-        self.sess = tf.Session(graph=self.g)
+        gpu_options = tf.GPUOptions(allow_growth=True)
+        self.sess = tf.Session(graph=self.g,
+                               config=tf.ConfigProto(gpu_options=gpu_options,
+                                                     log_device_placement=False)
+                               )
         self.sess.run(self.init)
 
     def _build_graph(self):
